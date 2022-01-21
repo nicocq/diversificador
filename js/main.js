@@ -10,28 +10,9 @@ function onClickConfiguracion(){
 }
 
 // CLASES
-class ConfiguracionActivo {
-    constructor(activo, porcentaje){
-        this.activo = activo;
-        this.porcentaje = porcentaje;
-    }
-
-    toString() { return `[ConfiguracionActivo]
-        activo:       ${this.activo},
-        porcentaje:   ${this.porcentaje}
-    `;
-    };
-}
-
-class Activo {
-    constructor(nombre){
-        this.nombre = nombre;
-    }
-}
-
 class Diversificador {
-    constructor(configuracion){
-        this.configuracion = configuracion;
+    constructor(patron){
+        this.patron = patron;
     }
 
     porcentaje(numero, porcentaje){
@@ -45,15 +26,33 @@ class Diversificador {
 
 class Patron {
     constructor(){
-        this.configuracion_activos = [];
+        this.activos = {};
     }
+
+    add_activo(nombre, porcentaje){
+        this.activos[nombre] = porcentaje;
+    }
+
+    get_activos = () => this.activos ;
+
+    toString() { return `[Patron]
+        activos:       ${this.activos},
+    `;
+    };
 }
 
 function main(){
     console.log("Iniciando diversificador");
-    let configuracion = new ConfiguracionActivo("BTC", 123);
-    console.log(configuracion);
-    console.log(configuracion.toString());
+    let patron = new Patron();
+    patron.add_activo('BTC', 10);
+    patron.add_activo('ALT', 10);
+    patron.add_activo('Dolares', 10);
+
+    console.log(patron);
+    console.log(patron.toString());
+
+    document.getElementById("patron-json").textContent = JSON.stringify(patron, undefined, 2);
+
 }
 
 
