@@ -1,9 +1,18 @@
 
-document.getElementById("btn-ingresos").addEventListener('click', onClickIngresos); 
+document.getElementById("btn-diversificar").addEventListener('click', onClickDiversificar); 
 document.getElementById("btn-configuracion").addEventListener('click', onClickConfiguracion); 
 
-function onClickIngresos(){
-    alert("Funcionalidad de ingresos");
+function onClickDiversificar(){
+    let ingresos = document.getElementById("input-ingresos").value;
+    ingresos = parseFloat(ingresos) || 0;
+
+    let almacenamiento = new Almacenamiento();
+    let patron_data = almacenamiento.get_patron();
+    let patron = Patron.create_from_object(patron_data);
+    
+    let diversificador = new Diversificador(patron);
+    let resultado = diversificador.diversificar(ingresos);
+    document.getElementById("resultado-json").textContent = JSON.stringify(resultado, undefined, 2);
 };
 function onClickConfiguracion(){
     alert("Funcionalidad de configuracion");
@@ -15,11 +24,9 @@ class Diversificador {
         this.patron = patron;
     }
 
-    porcentaje(numero, porcentaje){
-        return (numero * porcentaje) / 100
-    }
+    porcentaje = (numero, porcentaje) => (numero * porcentaje) / 100;
 
-    diversificar(ingresos){
+    diversificar = (ingresos) => {
         return {
             ingresos_totales: ingresos,
             resultado: Object.entries(this.patron.get_activos())
@@ -29,8 +36,7 @@ class Diversificador {
                     porcentaje: porcentaje, 
                     monto: this.porcentaje(ingresos, porcentaje)} 
             }) 
-        };
-        
+        };        
     }
 }
 
@@ -47,43 +53,25 @@ class Patron {
         return patron;
     }
 
-    add_activo(nombre, porcentaje){
-        this.activos[nombre] = porcentaje;
-    }
-
+    add_activo = (nombre, porcentaje) => this.activos[nombre] = porcentaje;
+    
     get_activos = () => this.activos ;
 
-    toString() { return `[Patron]
-        activos:       ${this.activos},
-    `;
-    };
-
     es_vacio = () => Object.entries(this.activos).length === 0
-
 }
 
 class Almacenamiento {
     constructor(){}
 
-    guardar(key, value){
-        return localStorage.setItem(key, value);
-    }
+    guardar = (key, value) => localStorage.setItem(key, value);  
 
-    recuperar(key){
-        return localStorage.getItem(key);
-    }
+    recuperar = (key) => localStorage.getItem(key); 
 
-    eliminar(key){
-        return localStorage.removeItem(key);
-    }
+    eliminar = (key) => localStorage.removeItem(key);
 
-    get_patron(){
-        return JSON.parse(this.recuperar('patron'));
-    }
+    get_patron = () => JSON.parse(this.recuperar('patron')); 
 
-    set_patron(data){
-        this.guardar('patron', JSON.stringify(data));
-    }
+    set_patron = (data) => this.guardar('patron', JSON.stringify(data));
 }   
 
 function main(){
@@ -101,13 +89,7 @@ function main(){
         console.log("Datos guardados");
     };
     console.log(patron);
-    console.log(patron.toString());
-
-    let diversificador = new Diversificador(patron);
-    let resultado = diversificador.diversificar(120000);
     document.getElementById("patron-json").textContent = JSON.stringify(patron, undefined, 2);
-    document.getElementById("resultado-json").textContent = JSON.stringify(resultado, undefined, 2);
-    
 }
 
 main();
