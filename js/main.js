@@ -39,6 +39,14 @@ class Patron {
         this.activos = {};
     }
 
+    static create_from_object(data){
+        let patron = new Patron();
+        if (data) {
+            patron.activos = data.activos;
+        }
+        return patron;
+    }
+
     add_activo(nombre, porcentaje){
         this.activos[nombre] = porcentaje;
     }
@@ -49,15 +57,49 @@ class Patron {
         activos:       ${this.activos},
     `;
     };
+
+    es_vacio = () => Object.entries(this.activos).length === 0
+
 }
+
+class Almacenamiento {
+    constructor(){}
+
+    guardar(key, value){
+        return localStorage.setItem(key, value);
+    }
+
+    recuperar(key){
+        return localStorage.getItem(key);
+    }
+
+    eliminar(key){
+        return localStorage.removeItem(key);
+    }
+
+    get_patron(){
+        return JSON.parse(this.recuperar('patron'));
+    }
+
+    set_patron(data){
+        this.guardar('patron', JSON.stringify(data));
+    }
+}   
 
 function main(){
     console.log("Iniciando diversificador");
-    let patron = new Patron();
-    patron.add_activo('BTC', 10);
-    patron.add_activo('ALT', 10);
-    patron.add_activo('Dolares', 10);
+    let almacenamiento = new Almacenamiento();
 
+    let patron_data = almacenamiento.get_patron();
+    let patron = Patron.create_from_object(patron_data);
+    if ( patron.es_vacio()){ 
+        patron = new Patron();
+        patron.add_activo('BTC', 10);
+        patron.add_activo('ALT', 10);
+        patron.add_activo('Dolares', 10);
+        almacenamiento.set_patron(patron);
+        console.log("Datos guardados");
+    };
     console.log(patron);
     console.log(patron.toString());
 
