@@ -4,6 +4,12 @@ document.getElementById("btn-configuracion").addEventListener('click', onClickCo
 document.getElementById("btn-cancelar").addEventListener('submit', onClickCancelarConfiguracion)
 document.getElementById("form-configuracion").addEventListener('submit', onClickGuardarConfiguracion)
 
+function log(mensaje){
+    let log_element = document.getElementById('mensajes-log');
+    log_element.innerHTML = '';
+    log_element.innerHTML = mensaje; 
+}
+
 function onClickCancelarConfiguracion(){
     document.getElementById('form-configuracion-container').style.display = "none";
 }
@@ -26,6 +32,7 @@ function onClickGuardarConfiguracion(e){
     document.getElementById('form-configuracion-container').style.display = "none";
     document.getElementById("patron-json").textContent = JSON.stringify(patron, undefined, 2);
 
+    log("Datos guardados correctamente");
     return false;
 }
 
