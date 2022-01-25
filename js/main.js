@@ -26,6 +26,10 @@ function onClickGuardarConfiguracion(e){
         objeto[activo_inputs[i].value] = porcentaje_inputs[i].value;
     }
     patron = Patron.create_from_object({activos: objeto});
+    if (!patron.is_valid() ) {
+        log(patron.errores);
+        return false;
+    }
     let almacenamiento = new Almacenamiento();
     almacenamiento.set_patron(patron);
 
@@ -107,6 +111,7 @@ class Diversificador {
 class Patron {
     constructor(){
         this.activos = {};
+        this.errores = [];
     }
 
     static create_from_object(data){
@@ -121,7 +126,22 @@ class Patron {
     
     get_activos = () => this.activos ;
 
-    es_vacio = () => Object.entries(this.activos).length === 0
+    es_vacio = () => Object.entries(this.activos).length === 0;
+
+    is_valid = () => {
+        let total = Object.values(this.get_activos()).reduce((e1, e2) => {
+            return parseFloat(e1) + parseFloat(e2);
+        });
+
+        if (total > 100){
+            this.errores.push("El total de porcentajes no debe superar el 100%");
+        }
+        if (total < 1){
+            this.errores.push("El total debe ser mayor a 0");
+        }
+
+        return (this.errores.length == 0);
+    }
 }
 
 class Almacenamiento {
