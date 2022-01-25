@@ -1,6 +1,28 @@
 
 document.getElementById("btn-diversificar").addEventListener('click', onClickDiversificar); 
 document.getElementById("btn-configuracion").addEventListener('click', onClickConfiguracion); 
+document.getElementById("form-configuracion").addEventListener('submit', onClickGuardarConfiguracion)
+
+function onClickGuardarConfiguracion(e){
+    e.preventDefault();
+
+    let form = document.getElementById("form-configuracion");
+    let activo_inputs = form.querySelectorAll('[name*=activo]');
+    let porcentaje_inputs = form.querySelectorAll('[name*=porcentaje]');
+
+    let objeto = {}
+    for (let i =0; i < activo_inputs.length; i++ ){
+        objeto[activo_inputs[i].value] = porcentaje_inputs[i].value;
+    }
+    patron = Patron.create_from_object({activos: objeto});
+    let almacenamiento = new Almacenamiento();
+    almacenamiento.set_patron(patron);
+
+    document.getElementById('form-configuracion-container').style.display = "none";
+    document.getElementById("patron-json").textContent = JSON.stringify(patron, undefined, 2);
+
+    return false;
+}
 
 function onClickDiversificar(){
     let ingresos = document.getElementById("input-ingresos").value;
@@ -15,7 +37,37 @@ function onClickDiversificar(){
     document.getElementById("resultado-json").textContent = JSON.stringify(resultado, undefined, 2);
 };
 function onClickConfiguracion(){
-    alert("Funcionalidad de configuracion");
+    console.log("Funcionalidad de configuracion");
+    document.getElementById('form-configuracion-container').style.display = "block";
+    let almacenamiento = new Almacenamiento();
+    let patron_data = almacenamiento.get_patron();
+    let patron = Patron.create_from_object(patron_data);
+    let table_body_contaier = document.getElementById('table-container');
+    table_body_contaier.innerHTML = '';
+    let ids= 0;
+    for (let [activo, porcentaje] of Object.entries(patron.get_activos())) {
+        tr = document.createElement('tr');
+        
+        td = document.createElement('td');
+        input = document.createElement('input');
+        label = document.createElement('label');
+        input.name = 'activo_' + ids; 
+        input.value = activo;
+        td.appendChild(input);
+        tr.appendChild(td);
+
+        td = document.createElement('td');
+        input = document.createElement('input');
+        label = document.createElement('label');
+        input.name = 'porcentaje_' + ids; 
+        input.value = porcentaje;
+        td.appendChild(input);
+        tr.appendChild(td);       
+       
+        table_body_contaier.appendChild(tr);
+        ids += 1;
+    }
+    
 }
 
 // CLASES
@@ -77,6 +129,7 @@ class Almacenamiento {
 function main(){
     console.log("Iniciando diversificador");
     let almacenamiento = new Almacenamiento();
+    document.getElementById('form-configuracion-container').style.display = "none";
 
     let patron_data = almacenamiento.get_patron();
     let patron = Patron.create_from_object(patron_data);
