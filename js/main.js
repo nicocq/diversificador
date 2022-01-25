@@ -1,7 +1,12 @@
 
 document.getElementById("btn-diversificar").addEventListener('click', onClickDiversificar); 
 document.getElementById("btn-configuracion").addEventListener('click', onClickConfiguracion); 
+document.getElementById("btn-cancelar").addEventListener('submit', onClickCancelarConfiguracion)
 document.getElementById("form-configuracion").addEventListener('submit', onClickGuardarConfiguracion)
+
+function onClickCancelarConfiguracion(){
+    document.getElementById('form-configuracion-container').style.display = "none";
+}
 
 function onClickGuardarConfiguracion(e){
     e.preventDefault();
