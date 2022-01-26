@@ -1,8 +1,23 @@
 
 document.getElementById("btn-diversificar").addEventListener('click', onClickDiversificar);
 document.getElementById("btn-configuracion").addEventListener('click', onClickConfiguracion);
-document.getElementById("btn-cancelar").addEventListener('click', onClickCancelarConfiguracion)
-document.getElementById("form-configuracion").addEventListener('submit', onClickGuardarConfiguracion)
+document.getElementById("btn-cancelar").addEventListener('click', onClickCancelarConfiguracion);
+document.getElementById("form-configuracion").addEventListener('submit', onClickGuardarConfiguracion);
+PATRON = '';
+function onClickEliminarConfiguracion(e){
+    e.preventDefault();
+    if (confirm("Esta seguro que desea eliminar? se perderan los datos que no fueron guardados")) {
+        let indice = parseInt(this.getAttribute('data-id'));
+        let almacenamiento = new Almacenamiento();
+        let patron_data = almacenamiento.get_patron();
+        let patron = Patron.create_from_object(patron_data);
+        let activos = patron.get_activos();
+        delete activos[Object.keys(activos)[indice]];
+        patron.activos = activos
+        almacenamiento.set_patron(patron);
+        onClickConfiguracion();
+    }
+}
 
 function log(mensaje) {
     let log_element = document.getElementById('mensajes-log');
@@ -82,6 +97,15 @@ function onClickConfiguracion() {
         td.appendChild(input);
         tr.appendChild(td);
 
+        td = document.createElement('td');
+        button = document.createElement('button');
+        button.innerHTML = 'Eliminar';
+        button.setAttribute('data-id', ids);
+        button.addEventListener('click', onClickEliminarConfiguracion);
+                
+        td.appendChild(button);
+        tr.appendChild(td);
+
         table_body_contaier.appendChild(tr);
         ids += 1;
     }
@@ -112,8 +136,18 @@ function create_empty_option(table_body_contaier){
     td.appendChild(input);
     tr.appendChild(td);
 
-    let last_tr = table_body_contaier.getElementsByTagName('tr');
-    last_tr = last_tr[last_tr.length - 1];
+    let all_tr = table_body_contaier.getElementsByTagName('tr');
+    let last_tr = all_tr[all_tr.length - 1];
+    
+    td = document.createElement('td');
+    button = document.createElement('button');
+    button.innerHTML = 'Eliminar';
+    button.setAttribute('data-id', all_tr.length);
+    button.addEventListener('click', onClickEliminarConfiguracion);
+    
+    td.appendChild(button);
+    tr.appendChild(td);
+
     table_body_contaier.insertBefore(tr, last_tr.nextSibling );
 }
 
@@ -172,7 +206,6 @@ class Patron {
             total += parseFloat(porcentaje);
         })
 
-        console.log(total);
         if (total > 100) {
             this.errores.push("El total de porcentajes no debe superar el 100%");
         }
@@ -205,15 +238,14 @@ function main() {
     
     let patron_data = almacenamiento.get_patron();
     let patron = Patron.create_from_object(patron_data);
+    PATRON = patron;
     if (patron.es_vacio()) {
         patron = new Patron();
         patron.add_activo('BTC', 10);
         patron.add_activo('ALT', 10);
         patron.add_activo('Dolares', 10);
         almacenamiento.set_patron(patron);
-        console.log("Datos guardados");
     };
-    console.log(patron);
     document.getElementById("patron-json").textContent = JSON.stringify(patron, undefined, 2);
 }
 
