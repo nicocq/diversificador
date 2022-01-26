@@ -1,47 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diversificador</title>
 </head>
+
 <body>
     <h1>Diversificador</h1>
     <h4 id="mensajes-log"></h4>
-    <label for="ingresos">Ingresos</label>
-    <input name="ingresos" id="input-ingresos" type="text" placeholder="Ej: 125000">
-    <button id="btn-diversificar" autofocus> Diversificar </button>
-    <pre id="resultado-json"></pre>
-    <div id="2configuracion-container"></div>
-    <ul id="configuracion-container">
-        
-    </ul>
+    <div class="wrapper">
+        <div>
+            <label for="ingresos">Ingresos</label>
+            <input name="ingresos" id="input-ingresos" type="text" placeholder="Ej: 125000">
+            <button id="btn-diversificar" autofocus> Diversificar </button>
+            <pre id="resultado-json"></pre>
+            <div id="2configuracion-container"></div>
+            <ul id="configuracion-container"></ul>
+        </div>
 
-    <button id="btn-configuracion" autofocus> Configuracion </button>
-    <pre id="patron-json"></pre>
+        <div>
+            <button id="btn-configuracion" autofocus> Configuracion </button>
+            <pre id="patron-json"></pre>
+            <div id="form-configuracion-container">
+                <form id="form-configuracion" action="">
+                    <fieldset>
+                        <legend>Cambiar configuracion</legend>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Activo</th>
+                                    <th>Porcentaje</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-container">
 
-    <div id="form-configuracion-container">
-        <form id="form-configuracion" action="">
-            <fieldset>
-                <legend>Cambiar configuracion</legend>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Activo</th>
-                            <th>Porcentaje</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-container">
-            
-                    </tbody>
-                </table>
-            </fieldset>
-            <button id="btn-cancelar">Cancelar</button>
-            <button id="btn-guardar">Guardar</button>
-        </form>
+                            </tbody>
+                        </table>
+                        <button id="btn-cancelar">Cancelar</button>
+                        <button id="btn-guardar">Guardar</button>
+                    </fieldset>
+
+                </form>
+            </div>
+        </div>
     </div>
 </body>
+
 </html>
 
 <script src="js/main.js"></script>
+
+<style>
+    .wrapper {
+        display: grid;
+        grid-template-columns: 50% 50%;
+    }
+</style>
